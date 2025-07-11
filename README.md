@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/badge/Powered%20By-FastAPI-blue?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Sustainability-Focused-brightgreen?style=for-the-badge" />
 </p>
-
+ 
 ---
 
 ## 🌍 Project Description
