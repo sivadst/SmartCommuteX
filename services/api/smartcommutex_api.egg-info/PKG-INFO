@@ -1,0 +1,16 @@
+Metadata-Version: 2.4
+Name: smartcommutex-api
+Version: 0.1.0
+Summary: SmartCommuteX mobility intelligence API
+Requires-Python: >=3.12
+Requires-Dist: celery[redis]>=5.4.0
+Requires-Dist: fastapi>=0.115.0
+Requires-Dist: pydantic-settings>=2.6.0
+Requires-Dist: psycopg[binary]>=3.2.3
+Requires-Dist: redis>=5.2.0
+Requires-Dist: sqlalchemy>=2.0.36
+Requires-Dist: structlog>=24.4.0
+Requires-Dist: uvicorn[standard]>=0.32.0
+Provides-Extra: dev
+Requires-Dist: httpx>=0.27.2; extra == "dev"
+Requires-Dist: pytest>=8.3.3; extra == "dev"
