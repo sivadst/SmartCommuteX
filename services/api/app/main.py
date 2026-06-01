@@ -1,7 +1,9 @@
 from contextlib import asynccontextmanager
 
+import httpx
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from redis.asyncio import Redis
 
 from app.api.router import api_router
 from app.core.config import get_settings
@@ -9,9 +11,15 @@ from app.core.logging import configure_logging
 
 
 @asynccontextmanager
-async def lifespan(_: FastAPI):
+async def lifespan(app: FastAPI):
     configure_logging(settings.log_level)
+    app.state.http_client = httpx.AsyncClient(
+        timeout=settings.api_timeout_seconds,
+    )
+    app.state.redis = Redis.from_url(settings.redis_url)
     yield
+    await app.state.http_client.aclose()
+    await app.state.redis.aclose()
 
 
 settings = get_settings()

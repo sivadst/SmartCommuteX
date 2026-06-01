@@ -1,6 +1,6 @@
 # SmartCommuteX
 
-SmartCommuteX is an AI mobility operating system for carbon-aware, multimodal commute intelligence. This repository now starts from a production-grade foundation instead of a demo scaffold: a premium Next.js frontend, an async-first FastAPI service layer, Redis/Celery operational primitives, and deployment-ready local infrastructure.
+SmartCommuteX is an AI mobility operating system for carbon-aware, multimodal commute intelligence. The repository now includes a real map-first product slice: GraphHopper-powered route planning, an interactive Mapbox trip canvas, persisted trip intelligence, and dashboard analytics on top of the original production-grade foundation.
 
 ## Platform Shape
 
@@ -17,19 +17,25 @@ SmartCommuteX is an AI mobility operating system for carbon-aware, multimodal co
 
 ## What Exists Today
 
-- Cinematic mobility-tech landing experience with reusable UI primitives and state/query providers.
-- Backend health/readiness endpoints and a typed commute recommendation API.
+- Premium map-centric Next.js experience with live route comparison, dynamic markers, and animated overlays.
+- FastAPI route planning pipeline with GraphHopper integration, traffic/time/carbon intelligence, and ranking logic.
+- Async SQLAlchemy models plus Alembic migrations for users, trips, route snapshots, saved routes, carbon metrics, and commute profiles.
+- Dashboard analytics surface backed by persisted trip and sustainability data.
 - Dockerized web, API, worker, PostgreSQL, and Redis services.
-- Monorepo workspace ready for analytics, routing, auth, ML pipelines, and observability.
+
+## Required Environment
+
+- `NEXT_PUBLIC_MAPBOX_TOKEN`: required for the live map canvas.
+- `GRAPHHOPPER_API_KEY`: required for real route generation.
+- `docker compose up --build`: runs Alembic migrations automatically before API and worker startup.
 
 ## Near-Term Build Path
 
-1. Integrate Mapbox and route rendering with GraphHopper-backed trip graph queries.
-2. Add PostgreSQL persistence and Redis-backed route/result caching.
-3. Introduce ML feature pipelines for traffic prediction, carbon modeling, and personalized route ranking.
-4. Stand up auth, rate limiting, and event telemetry for production operations.
+1. Add route alternative expansion, EV charging heuristics, and transit adapters.
+2. Introduce geocoding/search, user auth, and saved-route workflows in the UI.
+3. Move baseline intelligence services behind dedicated model-serving interfaces for ML upgrades.
+4. Add observability, rate limiting, and event telemetry for production operations.
 
 ## Standards
 
 Every layer should optimize for scalability, maintainability, performance, UX polish, and production safety. If a change does not improve those dimensions, it should not land.
-

@@ -8,6 +8,8 @@ WORKDIR /workspace
 COPY services/api/pyproject.toml ./pyproject.toml
 COPY services/api/app ./app
 COPY services/api/tests ./tests
+COPY services/api/alembic ./alembic
+COPY services/api/alembic.ini ./alembic.ini
 
 RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -e .[dev]
 

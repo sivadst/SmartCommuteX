@@ -1,3 +1,5 @@
+@import "mapbox-gl/dist/mapbox-gl.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -47,4 +49,16 @@ a {
 
 .grid-pattern {
   background-size: 100% 100%, 32px 32px, 32px 32px;
+}
+
+.mapboxgl-popup-content {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(8, 16, 21, 0.94);
+  color: var(--color-ink);
+  box-shadow: 0 24px 80px rgba(8, 16, 20, 0.48);
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: rgba(8, 16, 21, 0.94) !important;
 }

@@ -1,23 +1,32 @@
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-
-client = TestClient(app)
-
-
-def test_recommendations_rank_options() -> None:
+def test_plan_commute_returns_ranked_routes(client) -> None:
     payload = {
-        "origin": {"lat": 13.0827, "lng": 80.2707},
-        "destination": {"lat": 13.0674, "lng": 80.2376},
-        "priority": "carbon",
-        "allowed_modes": ["transit", "bike", "ev"],
+        "origin": {"lat": 13.0827, "lng": 80.2707, "label": "Chennai Central"},
+        "destination": {"lat": 13.0674, "lng": 80.2376, "label": "T Nagar"},
+        "objective": "greenest",
+        "allowed_modes": ["bike", "rideshare"],
     }
 
-    response = client.post("/api/v1/mobility/recommendations", json=payload)
+    response = client.post("/api/v1/mobility/plan", json=payload)
 
     assert response.status_code == 200
     data = response.json()
-    assert data["recommended_mode"] == "bike"
-    assert len(data["options"]) == 3
-    assert data["options"][0]["mobility_score"] >= data["options"][1]["mobility_score"]
+    assert data["summary"]["best_mode"] == "bike"
+    assert len(data["routes"]) == 2
+    assert data["routes"][0]["mobility_score"] >= data["routes"][1]["mobility_score"]
+
+
+def test_dashboard_overview_uses_persisted_trip_data(client) -> None:
+    payload = {
+        "origin": {"lat": 13.0827, "lng": 80.2707, "label": "Chennai Central"},
+        "destination": {"lat": 13.0674, "lng": 80.2376, "label": "T Nagar"},
+        "objective": "balanced",
+        "allowed_modes": ["bike", "rideshare"],
+    }
+    client.post("/api/v1/mobility/plan", json=payload)
+
+    response = client.get("/api/v1/dashboard/overview")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["metrics"]) == 4
+    assert len(data["recent_trips"]) == 1

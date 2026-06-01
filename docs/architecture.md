@@ -63,14 +63,17 @@ The visual system is tokenized in CSS variables to support future theming across
 ## Request Flow
 
 1. User defines origin, destination, and preference weights in the frontend.
-2. Frontend submits a typed request to `/api/v1/mobility/recommendations`.
-3. API validates payloads, applies policy hooks, and delegates to the recommendation service.
-4. Recommendation service fuses heuristic scoring today and can later call:
-   - GraphHopper route expansion
-   - Redis cache lookups
-   - ML inference endpoints
-   - OR-Tools optimization jobs
-5. Response returns ranked commute options, sustainability metrics, and decision rationale.
+2. Frontend submits a typed request to `/api/v1/mobility/plan`.
+3. API validates payloads and calls the mobility planning service.
+4. Mobility planning service:
+   - fetches per-mode route geometry from GraphHopper
+   - applies Redis route caching
+   - estimates traffic pressure
+   - predicts travel time uplift
+   - computes carbon and cost metrics
+   - ranks routes by objective
+   - persists trip and route snapshots in PostgreSQL
+5. Dashboard reads persisted data from `/api/v1/dashboard/overview`.
 
 ## Scale Path
 
@@ -96,4 +99,5 @@ The visual system is tokenized in CSS variables to support future theming across
 - Rate limiting and auth hooks
 - Cache-first external route enrichment
 - Background execution for heavy optimization and model inference
-
+- Alembic-managed schema evolution
+- Map-first UX with API-backed analytics surfaces

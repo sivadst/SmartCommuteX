@@ -8,8 +8,11 @@ version = "0.1.0"
 description = "SmartCommuteX mobility intelligence API"
 requires-python = ">=3.12"
 dependencies = [
+  "alembic>=1.14.0",
+  "asyncpg>=0.30.0",
   "celery[redis]>=5.4.0",
   "fastapi>=0.115.0",
+  "httpx>=0.27.2",
   "pydantic-settings>=2.6.0",
   "psycopg[binary]>=3.2.3",
   "redis>=5.2.0",
@@ -20,7 +23,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-  "httpx>=0.27.2",
+  "aiosqlite>=0.20.0",
   "pytest>=8.3.3"
 ]
 
