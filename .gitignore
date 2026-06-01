@@ -5,6 +5,7 @@ node_modules
 dist
 build
 coverage
+.tsbuildinfo
 __pycache__
 .pytest_cache
 .mypy_cache
@@ -19,4 +20,3 @@ venv
 *.pyd
 *.sqlite3
 *.log
-

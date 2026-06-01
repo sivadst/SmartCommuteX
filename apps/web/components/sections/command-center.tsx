@@ -1,8 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Clock3, Leaf, Route, Wallet } from "lucide-react";
+import { Clock3, Leaf, type LucideIcon, Wallet } from "lucide-react";
 import { useCommuteStore } from "@/store/commute-store";
+
+const priorityModes = ["balanced", "time", "cost", "carbon"] as const;
 
 const recommendationCards = [
   {
@@ -44,7 +46,7 @@ export function CommandCenter() {
           <h2 className="mt-2 text-2xl font-semibold text-white">Rank the right commute mode.</h2>
         </div>
         <div className="flex flex-wrap gap-2">
-          {["balanced", "time", "cost", "carbon"].map((mode) => {
+          {priorityModes.map((mode) => {
             const active = priority === mode;
             return (
               <button
@@ -94,7 +96,7 @@ export function CommandCenter() {
 }
 
 type MetricBadgeProps = {
-  icon: typeof Route;
+  icon: LucideIcon;
   label: string;
   value: string;
 };
@@ -110,4 +112,3 @@ function MetricBadge({ icon: Icon, label, value }: MetricBadgeProps) {
     </div>
   );
 }
-
