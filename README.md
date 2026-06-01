@@ -1,79 +1,35 @@
-# SmartCommuteX<h1 align="center">🚀 SmartCommuteX</h1>
+# SmartCommuteX
 
-<p align="center">
-  <img src="https://img.shields.io/badge/AI%20Hackathon-Ready-purple?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Powered%20By-FastAPI-blue?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Sustainability-Focused-brightgreen?style=for-the-badge" />
-</p>
- 
----
+SmartCommuteX is an AI mobility operating system for carbon-aware, multimodal commute intelligence. This repository now starts from a production-grade foundation instead of a demo scaffold: a premium Next.js frontend, an async-first FastAPI service layer, Redis/Celery operational primitives, and deployment-ready local infrastructure.
 
-## 🌍 Project Description
+## Platform Shape
 
-**SmartCommuteX** is your futuristic ride companion — an intelligent route + mode optimizer built to revolutionize how we **commute smart, green, and clean** 🌱.
+- `apps/web`: Next.js App Router frontend with TypeScript, TailwindCSS, Framer Motion, Zustand, and React Query.
+- `services/api`: FastAPI backend with versioned APIs, typed schemas, structured logging, readiness endpoints, and recommendation services.
+- `docs/architecture.md`: system architecture, service boundaries, data flow, and scale path.
+- `.github/workflows/ci.yml`: CI baseline for frontend and backend quality gates.
 
-This is not just another project. It’s a solo-built, daily-evolving system focused on:
+## Quick Start
 
-- ♻️ **Carbon Emission Awareness**
-- 💸 **Cost Optimization**
-- ⏱ **Time Efficiency**
-- 📊 **Data-driven Choices**
-- 🛠️ **Modular Backend + Scalable Frontend**
+1. Copy `.env.example` to `.env`.
+2. Start infrastructure with `docker compose up --build`.
+3. Open `http://localhost:3000` for the frontend and `http://localhost:8000/api/v1/health/liveness` for the API.
 
-Designed from scratch by one mind, one mission, one name: **Selvasiva a.k.a JD 🧠**
+## What Exists Today
 
----
+- Cinematic mobility-tech landing experience with reusable UI primitives and state/query providers.
+- Backend health/readiness endpoints and a typed commute recommendation API.
+- Dockerized web, API, worker, PostgreSQL, and Redis services.
+- Monorepo workspace ready for analytics, routing, auth, ML pipelines, and observability.
 
-## 📅 Project Journey (Day-by-Day Progress)
+## Near-Term Build Path
 
-| Day | What was done |
-|-----|----------------|
-| ✅ **Day 1** | Project initialized, FastAPI backend set up, basic API endpoint created (`/predict`) |
-| 🔜 **Day 2** | Carbon Score Model + Optimization Logic integration |
-| 🔜 **Day 3** | Route data exploration & distance matrix setup |
-| 🔜 **Day 4** | Multi-modal integration (Metro, Bus, Bike, Walk) |
-| 🔜 **Day 5** | React Frontend skeleton with TailwindCSS setup |
-| 🔜 **Day 6** | Live carbon scoring + visualizations |
-| 🔜 **Day 7** | MVP deployment on Streamlit Cloud or Render |
-| 🔜 **Day 8+** | Advanced features like trip recommendations, sustainability badges, route animation, and more... |
+1. Integrate Mapbox and route rendering with GraphHopper-backed trip graph queries.
+2. Add PostgreSQL persistence and Redis-backed route/result caching.
+3. Introduce ML feature pipelines for traffic prediction, carbon modeling, and personalized route ranking.
+4. Stand up auth, rate limiting, and event telemetry for production operations.
 
-🧠 *Every commit = one brain-level up.*
+## Standards
 
----
+Every layer should optimize for scalability, maintainability, performance, UX polish, and production safety. If a change does not improve those dimensions, it should not land.
 
-## 🚦 Core Tech Stack
-
-| Layer        | Stack                        |
-|-------------|------------------------------|
-| 🌐 Backend   | FastAPI, Python, Pydantic    |
-| 🧮 Logic     | Custom Carbon Estimator, Time-Cost Modules |
-| 📁 Data      | Cleaned CSVs, Pandas         |
-| 💻 Frontend  | React, Tailwind CSS (WIP)    |
-| 🧪 Testing   | Postman, `requests`, `pytest` |
-| ☁️ Hosting   | GitHub, ngrok, Streamlit (planned) |
-
----
-
-## 🔮 Vision
-
-> “Imagine a city where every commuter makes informed, eco-conscious choices. SmartCommuteX is that future’s heartbeat.”  
-> — JD Selvasiva ✨
-
----
-
-## 🚧 Work in Progress
-
-This repo is evolving *day-by-day* like an AI with purpose.  
-Expect massive updates, smarter predictions, and a sleek UI as JD builds to *elite status* 🏆.
-
----
-
-## 📬 Wanna Collaborate?
-
-Pull requests are welcome once the solo v1 is finished 💪  
-This project is currently in **mystery mode** 🕶️  
-Stay tuned…
-
----
-
-<p align="center"><i>Built with grit, grind, and green goals 🚴‍♂️🌱</i></p>

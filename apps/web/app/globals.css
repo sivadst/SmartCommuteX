@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-ink: #f5f8f7;
+  --color-surface: #081015;
+  --color-line: rgba(255, 255, 255, 0.09);
+  --color-accent: #86ffca;
+  --color-accent-soft: rgba(134, 255, 202, 0.14);
+  --color-signal-cyan: #74dfff;
+  --color-signal-lime: #d3ff74;
+  --color-signal-amber: #ffd27a;
+  --bg-core: #071014;
+  --bg-elevated: rgba(255, 255, 255, 0.03);
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(116, 223, 255, 0.14), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(211, 255, 116, 0.12), transparent 24%),
+    linear-gradient(180deg, #04090c 0%, #071014 48%, #091318 100%);
+  color: var(--color-ink);
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.panel {
+  backdrop-filter: blur(18px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+}
+
+.grid-pattern {
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+}

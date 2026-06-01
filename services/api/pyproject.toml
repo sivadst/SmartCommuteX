@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smartcommutex-api"
+version = "0.1.0"
+description = "SmartCommuteX mobility intelligence API"
+requires-python = ">=3.12"
+dependencies = [
+  "celery[redis]>=5.4.0",
+  "fastapi>=0.115.0",
+  "pydantic-settings>=2.6.0",
+  "psycopg[binary]>=3.2.3",
+  "redis>=5.2.0",
+  "sqlalchemy>=2.0.36",
+  "structlog>=24.4.0",
+  "uvicorn[standard]>=0.32.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "httpx>=0.27.2",
+  "pytest>=8.3.3"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
