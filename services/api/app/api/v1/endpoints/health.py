@@ -12,8 +12,8 @@ async def liveness() -> dict[str, str]:
     return {"status": "alive"}
 
 
-@router.get("/readiness")
-async def readiness() -> dict[str, str] | JSONResponse:
+@router.get("/readiness", response_model=None)
+async def readiness():
     settings = get_settings()
     redis_state = await get_redis_ping(settings.redis_url)
     status = "ready" if redis_state else "degraded"
