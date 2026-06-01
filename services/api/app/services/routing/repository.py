@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
-from sqlalchemy import Select, func, select
+from sqlalchemy import Select, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -77,3 +77,21 @@ class TripRepository:
         )
         return await self.session.scalar(statement)
 
+    async def get_mode_preference_scores(
+        self, *, origin_label: str, destination_label: str
+    ) -> dict[str, int]:
+        statement = (
+            select(RouteSnapshot.mode, func.count(RouteSnapshot.id))
+            .join(Trip, RouteSnapshot.trip_id == Trip.id)
+            .where(
+                Trip.origin_label == origin_label,
+                Trip.destination_label == destination_label,
+            )
+            .group_by(RouteSnapshot.mode)
+        )
+        rows = (await self.session.execute(statement)).all()
+        return {str(mode): int(count) for mode, count in rows}
+
+    async def get_recent_route_snapshots(self, limit: int = 10) -> Sequence[RouteSnapshot]:
+        statement = select(RouteSnapshot).order_by(desc(RouteSnapshot.created_at)).limit(limit)
+        return (await self.session.scalars(statement)).all()

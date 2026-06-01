@@ -11,15 +11,25 @@ Objective = Literal["balanced", "fastest", "cheapest", "greenest", "least_traffi
 
 
 class CommuteWeights(BaseModel):
-    time: float = Field(default=0.3, ge=0, le=1)
-    cost: float = Field(default=0.18, ge=0, le=1)
-    carbon: float = Field(default=0.22, ge=0, le=1)
+    time: float = Field(default=0.24, ge=0, le=1)
+    cost: float = Field(default=0.14, ge=0, le=1)
+    carbon: float = Field(default=0.18, ge=0, le=1)
     traffic: float = Field(default=0.18, ge=0, le=1)
-    comfort: float = Field(default=0.12, ge=0, le=1)
+    comfort: float = Field(default=0.1, ge=0, le=1)
+    confidence: float = Field(default=0.08, ge=0, le=1)
+    personalization: float = Field(default=0.08, ge=0, le=1)
 
     @model_validator(mode="after")
     def validate_total_weight(self) -> "CommuteWeights":
-        total = self.time + self.cost + self.carbon + self.traffic + self.comfort
+        total = (
+            self.time
+            + self.cost
+            + self.carbon
+            + self.traffic
+            + self.comfort
+            + self.confidence
+            + self.personalization
+        )
         if total <= 0:
             raise ValueError("At least one weight must be positive.")
         if total > 1.0:
@@ -35,8 +45,9 @@ class MobilityPlanRequest(BaseModel):
     departure_time: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     objective: Objective = "balanced"
     allowed_modes: list[Mode] = Field(default_factory=lambda: ["walk", "bike", "ev", "rideshare"])
-    route_limit: int = Field(default=4, ge=1, le=6)
+    route_limit: int = Field(default=6, ge=1, le=10)
     weights: CommuteWeights = Field(default_factory=CommuteWeights)
+    live_refresh: bool = False
 
     @model_validator(mode="after")
     def validate_modes(self) -> "MobilityPlanRequest":
@@ -54,6 +65,10 @@ class RouteAnalytics(BaseModel):
     cost_usd: float
     comfort_score: float
     reliability_score: float
+    confidence_score: float
+    weather_penalty: float
+    habit_affinity: float
+    anomaly_score: float
 
 
 class RouteScoreBreakdown(BaseModel):
@@ -62,6 +77,8 @@ class RouteScoreBreakdown(BaseModel):
     carbon: float
     traffic: float
     comfort: float
+    confidence: float
+    personalization: float
 
 
 class RouteOption(BaseModel):
@@ -74,6 +91,8 @@ class RouteOption(BaseModel):
     scores: RouteScoreBreakdown
     mobility_score: float
     rationale: str
+    route_confidence_label: str
+    route_variant: str
 
 
 class MobilitySummary(BaseModel):
@@ -81,6 +100,7 @@ class MobilitySummary(BaseModel):
     recommendation_reason: str
     route_count: int
     best_mode: Mode
+    live_refresh_recommended: bool
 
 
 class MobilityPlanResponse(BaseModel):
@@ -123,9 +143,37 @@ class AIRecommendationPanelItem(BaseModel):
     impact_label: str
 
 
+class CityPulseMetric(BaseModel):
+    label: str
+    value: str
+    signal: Literal["stable", "watch", "critical", "positive"]
+
+
+class PredictiveCongestionPanel(BaseModel):
+    corridor: str
+    intensity: str
+    recommendation: str
+    confidence: float
+
+
+class InsightTimelineItem(BaseModel):
+    timestamp: datetime
+    headline: str
+    narrative: str
+    severity: Literal["info", "watch", "critical", "positive"]
+
+
+class CommandCenterSnapshot(BaseModel):
+    generated_at: datetime
+    city_pulse: list[CityPulseMetric]
+    predictive_congestion: list[PredictiveCongestionPanel]
+    insights_timeline: list[InsightTimelineItem]
+    live_refresh_recommended: bool
+
+
 class DashboardOverviewResponse(BaseModel):
     metrics: list[DashboardMetricCard]
     sustainability: SustainabilitySummary
     recent_trips: list[TripHistoryItem]
     ai_recommendations: list[AIRecommendationPanelItem]
-
+    command_center: CommandCenterSnapshot

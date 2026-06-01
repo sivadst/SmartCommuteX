@@ -11,7 +11,10 @@ def test_plan_commute_returns_ranked_routes(client) -> None:
     assert response.status_code == 200
     data = response.json()
     assert data["summary"]["best_mode"] == "bike"
+    assert data["summary"]["live_refresh_recommended"] is False
     assert len(data["routes"]) == 2
+    assert "confidence_score" in data["routes"][0]["analytics"]
+    assert data["routes"][0]["route_variant"] == "primary"
     assert data["routes"][0]["mobility_score"] >= data["routes"][1]["mobility_score"]
 
 
@@ -30,3 +33,5 @@ def test_dashboard_overview_uses_persisted_trip_data(client) -> None:
     data = response.json()
     assert len(data["metrics"]) == 4
     assert len(data["recent_trips"]) == 1
+    assert "command_center" in data
+    assert len(data["command_center"]["city_pulse"]) >= 1

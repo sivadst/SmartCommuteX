@@ -221,6 +221,21 @@ export function TripMap({
           Click map to place {mapSelectionTarget}
         </div>
       ) : null}
+      {routes.length ? (
+        <div className="pointer-events-none absolute bottom-4 left-4 max-w-sm rounded-[1.4rem] border border-white/10 bg-black/45 px-4 py-4 backdrop-blur-xl">
+          <p className="text-xs uppercase tracking-[0.18em] text-white/42">Selected route intelligence</p>
+          <p className="mt-2 text-lg font-semibold text-white">
+            {(routes.find((route) => route.snapshot_id === selectedRouteId) ?? routes[0]).title}
+          </p>
+          <p className="mt-2 text-sm text-white/58">
+            Confidence{" "}
+            {(routes.find((route) => route.snapshot_id === selectedRouteId) ?? routes[0]).analytics.confidence_score}
+            {" · "}
+            Traffic{" "}
+            {(routes.find((route) => route.snapshot_id === selectedRouteId) ?? routes[0]).analytics.traffic_score}
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -86,6 +86,17 @@ export function RouteComparison({ plan, isPending }: RouteComparisonProps) {
                 <MetricChip icon={Leaf} label="Carbon" value={`${route.analytics.carbon_kg} kg`} />
                 <MetricChip icon={ShieldCheck} label="Traffic" value={`${route.analytics.traffic_score}`} />
               </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-white/62">
+                  {route.route_variant.replace("_", " ")}
+                </span>
+                <span className="rounded-full border border-accent/20 bg-accent-soft/40 px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-accent">
+                  {route.route_confidence_label}
+                </span>
+                <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-white/62">
+                  Weather penalty {route.analytics.weather_penalty}
+                </span>
+              </div>
               <p className="mt-5 text-sm leading-6 text-white/64">{route.rationale}</p>
               <div className="mt-4 inline-flex items-center gap-2 text-sm text-accent">
                 Focus this route on map
@@ -118,4 +129,3 @@ function MetricChip({
     </div>
   );
 }
-

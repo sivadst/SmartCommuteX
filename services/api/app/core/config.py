@@ -24,7 +24,19 @@ class Settings(BaseSettings):
         default="https://graphhopper.com/api/1", alias="GRAPHHOPPER_BASE_URL"
     )
     graphhopper_api_key: str | None = Field(default=None, alias="GRAPHHOPPER_API_KEY")
+    graphhopper_alternative_paths: int = Field(default=3, alias="GRAPHHOPPER_ALTERNATIVE_PATHS")
+    mapbox_access_token: str | None = Field(default=None, alias="MAPBOX_ACCESS_TOKEN")
+    mapbox_search_base_url: str = Field(
+        default="https://api.mapbox.com/search/searchbox/v1", alias="MAPBOX_SEARCH_BASE_URL"
+    )
+    mapbox_geocoding_base_url: str = Field(
+        default="https://api.mapbox.com/search/geocode/v6", alias="MAPBOX_GEOCODING_BASE_URL"
+    )
+    open_meteo_base_url: str = Field(
+        default="https://api.open-meteo.com/v1", alias="OPEN_METEO_BASE_URL"
+    )
     route_cache_ttl_seconds: int = Field(default=300, alias="ROUTE_CACHE_TTL_SECONDS")
+    realtime_stream_interval_seconds: int = Field(default=8, alias="REALTIME_STREAM_INTERVAL_SECONDS")
     redis_url: str = Field(default="redis://redis:6379/0", alias="REDIS_URL")
     celery_broker_url: str = Field(default="redis://redis:6379/1", alias="CELERY_BROKER_URL")
     celery_result_backend: str = Field(

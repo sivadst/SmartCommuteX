@@ -15,6 +15,7 @@
   --color-signal-amber: #ffd27a;
   --bg-core: #071014;
   --bg-elevated: rgba(255, 255, 255, 0.03);
+  --radius-panel: 2rem;
 }
 
 * {
@@ -49,6 +50,15 @@ a {
 
 .grid-pattern {
   background-size: 100% 100%, 32px 32px, 32px 32px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(134, 255, 202, 0.2);
 }
 
 .mapboxgl-popup-content {

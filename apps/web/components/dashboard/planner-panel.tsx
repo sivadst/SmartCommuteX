@@ -1,18 +1,26 @@
 "use client";
 
-import { Loader2, MapPin, Navigation, Zap } from "lucide-react";
+import { type ReactNode } from "react";
+import { Loader2, MapPin, Navigation, RadioTower, Zap } from "lucide-react";
 import { startTransition } from "react";
 import { motion } from "framer-motion";
+import { LocationSearchField } from "@/components/search/location-search-field";
 import { cn } from "@/lib/utils";
 import { usePlannerStore } from "@/store/planner-store";
-import type { MobilityPlanResponse, Mode, Objective, PlannerPoint } from "@/types/mobility";
+import type {
+  MobilityPlanResponse,
+  Mode,
+  Objective,
+  PlannerPoint,
+  SavedPlace
+} from "@/types/mobility";
 
 type PlannerPanelProps = {
   plan: MobilityPlanResponse | undefined;
   isPending: boolean;
   errorMessage: string | null;
   onSubmit: () => void;
-  onPointChange: (target: "origin" | "destination", key: keyof PlannerPoint, value: string) => void;
+  onPointSelect: (target: "origin" | "destination", point: PlannerPoint) => void;
 };
 
 const objectiveOptions: Array<{ value: Objective; label: string }> = [
@@ -35,7 +43,7 @@ export function PlannerPanel({
   isPending,
   errorMessage,
   onSubmit,
-  onPointChange
+  onPointSelect
 }: PlannerPanelProps) {
   const {
     origin,
@@ -45,8 +53,19 @@ export function PlannerPanel({
     mapSelectionTarget,
     setObjective,
     toggleMode,
-    armMapSelection
+    armMapSelection,
+    recentSearches,
+    savedPlaces,
+    addRecentSearch,
+    savePlace,
+    liveSync,
+    setLiveSync
   } = usePlannerStore();
+
+  const smartSuggestions: SavedPlace[] = dedupePlaces([
+    ...savedPlaces,
+    ...recentSearches
+  ]).slice(0, 6);
 
   return (
     <motion.section
@@ -61,7 +80,7 @@ export function PlannerPanel({
           <h2 className="mt-2 text-2xl font-semibold text-white">Compose the route objective.</h2>
         </div>
         <div className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs uppercase tracking-[0.18em] text-white/62">
-          Live graph routing
+          Search + inference core
         </div>
       </div>
 
@@ -72,8 +91,20 @@ export function PlannerPanel({
           icon={Navigation}
           isArmed={mapSelectionTarget === "origin"}
           onSelectFromMap={() => armMapSelection(mapSelectionTarget === "origin" ? null : "origin")}
-          onChange={(key, value) => onPointChange("origin", key, value)}
-        />
+        >
+          <LocationSearchField
+            label="Origin"
+            value={origin}
+            recentSearches={recentSearches}
+            savedPlaces={savedPlaces}
+            smartSuggestions={smartSuggestions}
+            onSelect={(point) => {
+              onPointSelect("origin", point);
+              addRecentSearch(toSavedPlace(point));
+            }}
+            onSavePlace={() => savePlace(toSavedPlace(origin))}
+          />
+        </PlannerPointCard>
         <PlannerPointCard
           title="Destination"
           point={destination}
@@ -82,8 +113,20 @@ export function PlannerPanel({
           onSelectFromMap={() =>
             armMapSelection(mapSelectionTarget === "destination" ? null : "destination")
           }
-          onChange={(key, value) => onPointChange("destination", key, value)}
-        />
+        >
+          <LocationSearchField
+            label="Destination"
+            value={destination}
+            recentSearches={recentSearches}
+            savedPlaces={savedPlaces}
+            smartSuggestions={smartSuggestions}
+            onSelect={(point) => {
+              onPointSelect("destination", point);
+              addRecentSearch(toSavedPlace(point));
+            }}
+            onSavePlace={() => savePlace(toSavedPlace(destination))}
+          />
+        </PlannerPointCard>
       </div>
 
       <div className="mt-6">
@@ -129,6 +172,28 @@ export function PlannerPanel({
         </div>
       </div>
 
+      <div className="mt-6 flex items-center justify-between rounded-[1.4rem] border border-white/10 bg-black/20 px-4 py-4">
+        <div className="flex items-center gap-3">
+          <RadioTower className="h-4 w-4 text-signal-cyan" />
+          <div>
+            <p className="text-sm font-medium text-white">Live route refresh</p>
+            <p className="text-sm text-white/52">Auto-refresh when command-center signals volatility.</p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => setLiveSync(!liveSync)}
+          className={cn(
+            "rounded-full px-4 py-2 text-xs uppercase tracking-[0.18em] transition",
+            liveSync
+              ? "bg-accent text-surface"
+              : "border border-white/10 bg-white/5 text-white/62"
+          )}
+        >
+          {liveSync ? "Enabled" : "Disabled"}
+        </button>
+      </div>
+
       <button
         onClick={onSubmit}
         disabled={isPending}
@@ -171,18 +236,17 @@ export function PlannerPanel({
 
 function PlannerPointCard({
   title,
-  point,
   icon: Icon,
   isArmed,
   onSelectFromMap,
-  onChange
+  children
 }: {
   title: string;
   point: PlannerPoint;
   icon: typeof Navigation;
   isArmed: boolean;
   onSelectFromMap: () => void;
-  onChange: (key: keyof PlannerPoint, value: string) => void;
+  children: ReactNode;
 }) {
   return (
     <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-4">
@@ -203,30 +267,25 @@ function PlannerPointCard({
           {isArmed ? "Armed" : "Pick on map"}
         </button>
       </div>
-
-      <div className="mt-4 grid gap-3">
-        <input
-          value={point.label}
-          onChange={(event) => onChange("label", event.target.value)}
-          className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none placeholder:text-white/32 focus:border-accent/40"
-          placeholder={`${title} label`}
-        />
-        <div className="grid grid-cols-2 gap-3">
-          <input
-            value={point.lat}
-            onChange={(event) => onChange("lat", event.target.value)}
-            className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none placeholder:text-white/32 focus:border-accent/40"
-            placeholder="Latitude"
-          />
-          <input
-            value={point.lng}
-            onChange={(event) => onChange("lng", event.target.value)}
-            className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none placeholder:text-white/32 focus:border-accent/40"
-            placeholder="Longitude"
-          />
-        </div>
-      </div>
+      <div className="mt-4">{children}</div>
     </div>
   );
 }
 
+function toSavedPlace(point: PlannerPoint): SavedPlace {
+  return {
+    id: `${point.label}-${point.lat}-${point.lng}`,
+    label: point.label,
+    address: point.address ?? point.label,
+    lat: point.lat,
+    lng: point.lng
+  };
+}
+
+function dedupePlaces(places: SavedPlace[]): SavedPlace[] {
+  const seen = new Map<string, SavedPlace>();
+  for (const place of places) {
+    seen.set(`${place.label}:${place.lat}:${place.lng}`, place);
+  }
+  return Array.from(seen.values());
+}

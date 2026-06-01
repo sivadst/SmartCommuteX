@@ -12,4 +12,3 @@ async def dashboard_overview(
     service: DashboardService = Depends(get_dashboard_service),
 ) -> DashboardOverviewResponse:
     return await service.overview()
-

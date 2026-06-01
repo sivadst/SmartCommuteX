@@ -5,8 +5,8 @@
     "dev": "next dev --hostname 0.0.0.0",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --max-warnings=0",
-    "typecheck": "tsc --noEmit"
+    "lint": "eslint . --max-warnings=0 --ignore-pattern .next",
+    "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.59.0",
